@@ -7,6 +7,9 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -44,9 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
                     InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                    response = readStream(in);
-                    Log.d("LOOK AT ME", response);
-                    return response;
+                    return readStream(in);
                 } catch(IOException e){
 
                 } finally {
@@ -62,7 +63,15 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String response) {
-            tvTemp.setText(response);
+            Log.d("Response", response);
+            try {
+                JSONObject object = new JSONObject(response);
+                JSONObject currentlyObject = object.getJSONObject("currently");
+                String currentSummary = currentlyObject.getString("summary");
+
+                tvTemp.setText(currentSummary);
+            } catch (JSONException e) {
+            }
         }
 
         private String readStream(InputStream is) {
