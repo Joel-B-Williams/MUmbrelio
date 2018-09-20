@@ -11,24 +11,32 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 class ForecastTask extends AsyncTask<String, Void, String> {
 
-    private TextView sender;
+    private WeakReference<TextView> textView;
 
-    public ForecastTask(TextView receiver){
-        this.sender = receiver;
+    public ForecastTask(TextView textView){
+        this.textView = new WeakReference<>(textView);
     }
+
+//    // Leaky field - Task is linked to view, but what happens if view is destroyed while task is in motion??
+//    private TextView sender;
+
+//    public ForecastTask(TextView receiver){
+//        this.sender = receiver;
+//    }
 
     @Override
     protected String doInBackground(String... urls) {
 
         //api.darksky.net/forecast/[key]/[latitude],[longitude]
         try {
-            URL url = new URL("https://api.darksky.net/forecast/cc49555736076755c5dee363e2b1fd21/41.8781,-87.6298");
+            URL url = new URL("https://api.darksky.net/forecast/"+ BuildConfig.DarkSky + "/41.8781,-87.6298");
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
             try {
@@ -48,7 +56,7 @@ class ForecastTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String response) {
-        Log.d("Response", response);
+        //Log.d("Response", response);
         try {
             JSONObject object = new JSONObject(response);
             JSONObject currentlyObject = object.getJSONObject("currently");
@@ -56,7 +64,7 @@ class ForecastTask extends AsyncTask<String, Void, String> {
             String currentTemp = currentlyObject.getString("temperature");
             String display = currentSummary + " " + currentTemp;
 
-            sender.setText(display);
+            textView.get().setText(display);
         } catch (JSONException e) {
         }
     }
