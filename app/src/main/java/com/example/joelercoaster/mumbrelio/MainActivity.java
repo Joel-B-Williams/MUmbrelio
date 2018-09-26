@@ -37,7 +37,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Location location) {
                         if (location != null) {
-                            tvCoords.setText(location.toString());
+                            String lat = String.valueOf(location.getLatitude());
+                            String lng = String.valueOf(location.getLongitude());
+                            String coords = lat + ", " + lng;
+                            tvCoords.setText(coords);
                         } else {
                             tvCoords.setText(fail);
                         }
