@@ -21,28 +21,23 @@ public class MainActivity extends AppCompatActivity {
 
         Button bForecast = findViewById(R.id.bForecast);
         final TextView tvTemp = findViewById(R.id.tvTemp);
-        //coords TV
-        final TextView tvCoords = findViewById(R.id.tvCoords);
-        final String fail = "failed";
-
+        final String pear = "Something has gone pear-shaped";
         final FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(this);
 
         bForecast.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ForecastTask(tvTemp).execute();
 
-                //coords stuff
                 client.getLastLocation().addOnSuccessListener(MainActivity.this, new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
                         if (location != null) {
                             String lat = String.valueOf(location.getLatitude());
                             String lng = String.valueOf(location.getLongitude());
-                            String coords = lat + ", " + lng;
-                            tvCoords.setText(coords);
+                            final String coords = lat + "," + lng;
+                            new ForecastTask(tvTemp, coords).execute();
                         } else {
-                            tvCoords.setText(fail);
+                            tvTemp.setText(pear);
                         }
                     }
                 });

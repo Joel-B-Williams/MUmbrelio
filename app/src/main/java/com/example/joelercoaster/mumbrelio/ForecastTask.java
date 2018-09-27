@@ -18,10 +18,12 @@ import java.net.URL;
 
 class ForecastTask extends AsyncTask<String, Void, String> {
 
+    private final String coords;
     private WeakReference<TextView> textView;
 
-    public ForecastTask(TextView textView){
+    public ForecastTask(TextView textView, String coords){
         this.textView = new WeakReference<>(textView);
+        this.coords = coords; 
     }
 
 //    // Leaky field - Task is linked to view, but what happens if view is destroyed while task is in motion??
@@ -36,7 +38,7 @@ class ForecastTask extends AsyncTask<String, Void, String> {
 
         //api.darksky.net/forecast/[key]/[latitude],[longitude]
         try {
-            URL url = new URL("https://api.darksky.net/forecast/"+ BuildConfig.DarkSky + "/41.8781,-87.6298");
+            URL url = new URL("https://api.darksky.net/forecast/"+ BuildConfig.DarkSky + "/" + coords );
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
             try {
