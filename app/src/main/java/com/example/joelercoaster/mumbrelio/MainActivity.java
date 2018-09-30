@@ -14,6 +14,8 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -24,13 +26,14 @@ public class MainActivity extends AppCompatActivity {
         Button bForecast = findViewById(R.id.bForecast);
         final TextView tvTemp = findViewById(R.id.tvTemp);
         final String pear = "Something has gone pear-shaped";
+        final String noPermissions = "You have not allowed location permissions";
+
         final FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(this);
 
         bForecast.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (ActivityCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(MainActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
                     //    ActivityCompat#requestPermissions
                     // here to request the missing permissions, and then overriding
@@ -38,10 +41,10 @@ public class MainActivity extends AppCompatActivity {
                     //                                          int[] grantResults)
                     // to handle the case where the user grants the permission. See the documentation
                     // for ActivityCompat#requestPermissions for more details.
-                    String noPermissions = "You have not granted location permissions";
                     tvTemp.setText(noPermissions);
                     return;
                 }
+
                 client.getLastLocation().addOnSuccessListener(MainActivity.this, new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
