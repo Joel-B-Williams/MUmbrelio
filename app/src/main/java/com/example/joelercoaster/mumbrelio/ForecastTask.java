@@ -19,10 +19,12 @@ import java.net.URL;
 class ForecastTask extends AsyncTask<String, Void, String> {
 
     private final String coords;
-    private WeakReference<TextView> textView;
+    private WeakReference<TextView> tvTemp;
+    private WeakReference<TextView> tvSummary;
 
-    public ForecastTask(TextView textView, String coords){
-        this.textView = new WeakReference<>(textView);
+    public ForecastTask(TextView textView, TextView textView1, String coords){
+        this.tvTemp = new WeakReference<>(textView);
+        this.tvSummary = new WeakReference<>(textView1);
         this.coords = coords; 
     }
 
@@ -38,7 +40,7 @@ class ForecastTask extends AsyncTask<String, Void, String> {
 
         //api.darksky.net/forecast/[key]/[latitude],[longitude]
         try {
-            URL url = new URL("https://api.darksky.net/forecast/"+ BuildConfig.DarkSky + "/" + coords );
+            URL url = new URL("https://api.darksky.net/forecast/"+ BuildConfig.DarkSky + "/" + coords + "?exclude=[daily,alerts,flags]" );
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
             try {
@@ -62,11 +64,14 @@ class ForecastTask extends AsyncTask<String, Void, String> {
         try {
             JSONObject object = new JSONObject(response);
             JSONObject currentlyObject = object.getJSONObject("currently");
+            JSONObject hourlyObject = object.getJSONObject("hourly");
             String currentSummary = currentlyObject.getString("summary");
-            String currentTemp = currentlyObject.getString("temperature");
-            String display = currentSummary + " " + currentTemp;
+            String apparentTemp = currentlyObject.getString("apparentTemperature");
+            //String display = currentSummary + " " + apparentTemp;
 
-            textView.get().setText(display);
+            tvSummary.get().setText(currentSummary);
+            tvTemp.get().setText(apparentTemp);
+            Log.d("Response", object.toString(4));
         } catch (JSONException e) {
         }
     }
