@@ -8,18 +8,23 @@
 
     <TextView
         android:id="@+id/tvTemp"
-        android:layout_width="84dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="144dp"
-        android:layout_marginLeft="144dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="156dp"
-        android:layout_marginRight="156dp"
-        android:layout_marginBottom="224dp"
-        app:layout_constraintBottom_toTopOf="@+id/bForecast"
+        android:layout_width="120dp"
+        android:layout_height="86dp"
+        android:layout_marginStart="119dp"
+        android:layout_marginLeft="119dp"
+        android:layout_marginTop="56dp"
+        android:layout_marginEnd="145dp"
+        android:layout_marginRight="145dp"
+        android:layout_marginBottom="19dp"
+        android:gravity="center"
+        android:text="00.00"
+        android:textSize="45sp"
+        app:layout_constraintBottom_toTopOf="@+id/tvSummary"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSummary" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.755" />
 
     <Button
         android:id="@+id/bForecast"
@@ -29,7 +34,7 @@
         android:layout_marginLeft="146dp"
         android:layout_marginEnd="145dp"
         android:layout_marginRight="145dp"
-        android:layout_marginBottom="96dp"
+        android:layout_marginBottom="133dp"
         android:text="Forecast"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,18 +43,19 @@
 
     <TextView
         android:id="@+id/tvSummary"
-        android:layout_width="87dp"
+        android:layout_width="189dp"
         android:layout_height="35dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="112dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/tvTemp"
+        android:layout_marginStart="84dp"
+        android:layout_marginLeft="84dp"
+        android:layout_marginEnd="111dp"
+        android:layout_marginRight="111dp"
+        android:layout_marginBottom="84dp"
+        android:gravity="center"
+        android:text="summary"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/bForecast"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.509"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
