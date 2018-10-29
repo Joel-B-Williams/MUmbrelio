@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.jjoe64.graphview.GraphView;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -27,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
         Button bForecast = findViewById(R.id.bForecast);
         final TextView tvTemp = findViewById(R.id.tvTemp);
         final TextView tvSummary = findViewById(R.id.tvSummary);
+        final GraphView gvWeather = findViewById(R.id.gvWeather);
+
+        gvWeather.removeAllSeries();
         final String pear = "Something has gone pear-shaped";
         final String noPermissions = "You have not allowed location permissions";
 

@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,6 +16,8 @@ import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 class ForecastTask extends AsyncTask<String, Void, String> {
 
@@ -65,13 +68,25 @@ class ForecastTask extends AsyncTask<String, Void, String> {
             JSONObject object = new JSONObject(response);
             JSONObject currentlyObject = object.getJSONObject("currently");
             JSONObject hourlyObject = object.getJSONObject("hourly");
+            JSONArray hourlyData = hourlyObject.getJSONArray("data");
+            ArrayList<Object> upcomingHours = new ArrayList<Object>();
+            //TODO - make 4 a magic number
+            if ( hourlyData != null && hourlyData.length() >= 4 ) {
+                for (int i=1;i<4;i++) {
+                    upcomingHours.add(hourlyData.get(i).toString());
+                }
+                //TODO - add graph data for these points
+            }
+
             String currentSummary = currentlyObject.getString("summary");
             String apparentTemp = currentlyObject.getString("apparentTemperature");
-            //String display = currentSummary + " " + apparentTemp;
 
             tvSummary.get().setText(currentSummary);
             tvTemp.get().setText(apparentTemp);
-            Log.d("Response", object.toString(4));
+            //Log.d("Response", object.toString(4));
+            //Log.d("Hourly", hourlyObject.toString(4));
+            //Log.d("hourlyData", hourlyData.toString(4));
+            Log.d("upcoming Hours", upcomingHours.toString());
         } catch (JSONException e) {
         }
     }
