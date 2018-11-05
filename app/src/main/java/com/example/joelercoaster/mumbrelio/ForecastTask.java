@@ -75,31 +75,34 @@ class ForecastTask extends AsyncTask<String, Void, String> {
             JSONObject currentlyObject = object.getJSONObject("currently");
             JSONObject hourlyObject = object.getJSONObject("hourly");
             JSONArray hourlyData = hourlyObject.getJSONArray("data");
-            ArrayList<String> upcomingTemps = new ArrayList<>();
-            //TODO - make 4 a magic number
-            if ( hourlyData != null && hourlyData.length() >= 4 ) {
-                for (int i=1;i<4;i++) {
-                    //TODO - grab just the temp from each inner object and add this this array
-                    JSONObject hour = hourlyData.getJSONObject(i);
-                    String nextApparentTemp = hour.getString("apparentTemperature");
-                    upcomingTemps.add(nextApparentTemp);
-                }
-                Log.d("upcoming Temps", upcomingTemps.toString());
-                //TODO - add graph data for these points
-                LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
-
-                });
-                gvWeather.get().addSeries(series);
-            }
 
             String currentSummary = currentlyObject.getString("summary");
             String apparentTemp = currentlyObject.getString("apparentTemperature");
 
+            ArrayList<String> upcomingTemps = new ArrayList<>();
+            //TODO - make 4 a magic number
+            if ( hourlyData != null && hourlyData.length() >= 4 ) {
+                for (int i=1;i<4;i++) {
+                    JSONObject hour = hourlyData.getJSONObject(i);
+                    String nextApparentTemp = hour.getString("apparentTemperature");
+                    upcomingTemps.add(nextApparentTemp);
+                }
+                upcomingTemps.add(0, apparentTemp);
+
+                DataPoint[] dp = new DataPoint[4];
+                for(int i=0;i<upcomingTemps.size();i++) {
+                    dp[i] = new DataPoint(new Double(i), Double.parseDouble(upcomingTemps.get(i)));
+                }
+                
+                LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dp);
+                //TODO - oh hallo mn-1 (or other axis adjustments)
+                gvWeather.get().getViewport().setMaxX(3);
+                gvWeather.get().getViewport().setXAxisBoundsManual(true);
+                gvWeather.get().addSeries(series);
+            }
+
             tvSummary.get().setText(currentSummary);
             tvTemp.get().setText(apparentTemp);
-            //Log.d("Response", object.toString(4));
-            //Log.d("Hourly", hourlyObject.toString(4));
-            //Log.d("hourlyData", hourlyData.toString(4));
         } catch (JSONException e) {
         }
     }
