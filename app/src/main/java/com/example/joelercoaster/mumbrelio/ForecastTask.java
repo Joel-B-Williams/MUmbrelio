@@ -4,6 +4,10 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,11 +28,13 @@ class ForecastTask extends AsyncTask<String, Void, String> {
     private final String coords;
     private WeakReference<TextView> tvTemp;
     private WeakReference<TextView> tvSummary;
+    private WeakReference<GraphView> gvWeather;
 
-    public ForecastTask(TextView textView, TextView textView1, String coords){
+    public ForecastTask(TextView textView, TextView textView1, GraphView graphView, String coords){
         this.tvTemp = new WeakReference<>(textView);
         this.tvSummary = new WeakReference<>(textView1);
-        this.coords = coords; 
+        this.gvWeather = new WeakReference<>(graphView);
+        this.coords = coords;
     }
 
 //    // Leaky field - Task is linked to view, but what happens if view is destroyed while task is in motion??
@@ -69,13 +75,21 @@ class ForecastTask extends AsyncTask<String, Void, String> {
             JSONObject currentlyObject = object.getJSONObject("currently");
             JSONObject hourlyObject = object.getJSONObject("hourly");
             JSONArray hourlyData = hourlyObject.getJSONArray("data");
-            ArrayList<Object> upcomingHours = new ArrayList<Object>();
+            ArrayList<String> upcomingTemps = new ArrayList<>();
             //TODO - make 4 a magic number
             if ( hourlyData != null && hourlyData.length() >= 4 ) {
                 for (int i=1;i<4;i++) {
-                    upcomingHours.add(hourlyData.get(i).toString());
+                    //TODO - grab just the temp from each inner object and add this this array
+                    JSONObject hour = hourlyData.getJSONObject(i);
+                    String nextApparentTemp = hour.getString("apparentTemperature");
+                    upcomingTemps.add(nextApparentTemp);
                 }
+                Log.d("upcoming Temps", upcomingTemps.toString());
                 //TODO - add graph data for these points
+                LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
+
+                });
+                gvWeather.get().addSeries(series);
             }
 
             String currentSummary = currentlyObject.getString("summary");
@@ -86,7 +100,6 @@ class ForecastTask extends AsyncTask<String, Void, String> {
             //Log.d("Response", object.toString(4));
             //Log.d("Hourly", hourlyObject.toString(4));
             //Log.d("hourlyData", hourlyData.toString(4));
-            Log.d("upcoming Hours", upcomingHours.toString());
         } catch (JSONException e) {
         }
     }

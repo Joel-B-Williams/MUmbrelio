@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                             String lat = String.valueOf(location.getLatitude());
                             String lng = String.valueOf(location.getLongitude());
                             final String coords = lat + "," + lng;
-                            new ForecastTask(tvTemp, tvSummary, coords).execute();
+                            new ForecastTask(tvTemp, tvSummary, gvWeather, coords).execute();
                         } else { tvTemp.setText(pear); }
                     }
                 });
