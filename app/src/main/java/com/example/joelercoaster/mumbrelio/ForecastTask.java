@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.series.PointsGraphSeries;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -69,7 +70,7 @@ class ForecastTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String response) {
-        //Log.d("Response", response);
+        Log.d("Response", response);
         try {
             JSONObject object = new JSONObject(response);
             JSONObject currentlyObject = object.getJSONObject("currently");
@@ -82,23 +83,31 @@ class ForecastTask extends AsyncTask<String, Void, String> {
             ArrayList<String> upcomingTemps = new ArrayList<>();
             //TODO - make 4 a magic number
             if ( hourlyData != null && hourlyData.length() >= 4 ) {
-                for (int i=1;i<4;i++) {
+                for (int i=0;i<4;i++) {
                     JSONObject hour = hourlyData.getJSONObject(i);
-                    String nextApparentTemp = hour.getString("apparentTemperature");
-                    upcomingTemps.add(nextApparentTemp);
+                    String hourlyApparentTemp = hour.getString("apparentTemperature");
+                    upcomingTemps.add(hourlyApparentTemp);
                 }
-                upcomingTemps.add(0, apparentTemp);
+                //upcomingTemps.add(0, apparentTemp);
 
                 DataPoint[] dp = new DataPoint[4];
                 for(int i=0;i<upcomingTemps.size();i++) {
                     dp[i] = new DataPoint(new Double(i), Double.parseDouble(upcomingTemps.get(i)));
                 }
-                
-                LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dp);
+
+                LineGraphSeries<DataPoint> hours = new LineGraphSeries<>(dp);
+
+                PointsGraphSeries<DataPoint> current = new PointsGraphSeries<>(new DataPoint[] {
+                    new DataPoint(0.5, new Double(apparentTemp))
+                });
+
                 //TODO - oh hallo mn-1 (or other axis adjustments)
                 gvWeather.get().getViewport().setMaxX(3);
                 gvWeather.get().getViewport().setXAxisBoundsManual(true);
-                gvWeather.get().addSeries(series);
+                gvWeather.get().addSeries(hours);
+                gvWeather.get().addSeries(current);
+                //TODO - x axis as hours from timestamp
+                //TODO - current temp in relation to timeline
             }
 
             tvSummary.get().setText(currentSummary);
