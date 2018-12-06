@@ -91,7 +91,6 @@ class ForecastTask extends AsyncTask<String, Void, String> {
                     String hourlyApparentTemp = hour.getString("apparentTemperature");
                     upcomingTemps.add(hourlyApparentTemp);
                 }
-                //upcomingTemps.add(0, apparentTemp);
 
                 DataPoint[] dp = new DataPoint[4];
                 for(int i=0;i<upcomingTemps.size();i++) {
@@ -100,9 +99,17 @@ class ForecastTask extends AsyncTask<String, Void, String> {
 
                 LineGraphSeries<DataPoint> hours = new LineGraphSeries<>(dp);
 
-                //TODO - current temp in relation to timeline
+                Calendar cal = Calendar.getInstance();
+
+                //TODO - should 60 be a magic number too?
+                float minutes = cal.get(Calendar.MINUTE);
+                float axis = minutes/60;
+
+                Log.d("Minutes", "" + minutes);
+                Log.d("Axis", "" + axis);
+
                 PointsGraphSeries<DataPoint> current = new PointsGraphSeries<>(new DataPoint[] {
-                    new DataPoint(0.5, new Double(apparentTemp))
+                    new DataPoint(axis, new Double(apparentTemp))
                 });
 
                 //TODO - oh hallo mn-1 (or other axis adjustments)
@@ -112,7 +119,6 @@ class ForecastTask extends AsyncTask<String, Void, String> {
                 gvWeather.get().addSeries(current);
 
                 //TODO - Functionalize this axis noise, if possible
-                Calendar cal = Calendar.getInstance();
 
                 int hourOne = cal.get(Calendar.HOUR_OF_DAY);
                 cal.add(Calendar.HOUR_OF_DAY, 1);
