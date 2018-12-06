@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.PointsGraphSeries;
@@ -22,6 +23,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 class ForecastTask extends AsyncTask<String, Void, String> {
@@ -70,7 +73,7 @@ class ForecastTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String response) {
-        Log.d("Response", response);
+        //Log.d("Response", response);
         try {
             JSONObject object = new JSONObject(response);
             JSONObject currentlyObject = object.getJSONObject("currently");
@@ -97,6 +100,7 @@ class ForecastTask extends AsyncTask<String, Void, String> {
 
                 LineGraphSeries<DataPoint> hours = new LineGraphSeries<>(dp);
 
+                //TODO - current temp in relation to timeline
                 PointsGraphSeries<DataPoint> current = new PointsGraphSeries<>(new DataPoint[] {
                     new DataPoint(0.5, new Double(apparentTemp))
                 });
@@ -106,8 +110,27 @@ class ForecastTask extends AsyncTask<String, Void, String> {
                 gvWeather.get().getViewport().setXAxisBoundsManual(true);
                 gvWeather.get().addSeries(hours);
                 gvWeather.get().addSeries(current);
-                //TODO - x axis as hours from timestamp
-                //TODO - current temp in relation to timeline
+
+                //TODO - Functionalize this axis noise, if possible
+                Calendar cal = Calendar.getInstance();
+
+                int hourOne = cal.get(Calendar.HOUR_OF_DAY);
+                cal.add(Calendar.HOUR_OF_DAY, 1);
+                int hourTwo = cal.get(Calendar.HOUR_OF_DAY);
+                cal.add(Calendar.HOUR_OF_DAY, 1);
+                int hourThree = cal.get(Calendar.HOUR_OF_DAY);
+                cal.add(Calendar.HOUR_OF_DAY, 1);
+                int hourFour = cal.get(Calendar.HOUR_OF_DAY);
+
+                StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(gvWeather.get());
+                staticLabelsFormatter.setHorizontalLabels(new String[] {
+                        Integer.toString(hourOne),
+                        Integer.toString(hourTwo),
+                        Integer.toString(hourThree),
+                        Integer.toString(hourFour)
+                });
+
+                gvWeather.get().getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
             }
 
             tvSummary.get().setText(currentSummary);
